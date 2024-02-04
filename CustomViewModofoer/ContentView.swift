@@ -7,96 +7,65 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    
-    @State private var useRedText = false
-    
-    let motto1 = Text("Dragon Sleeps")
-    let motto2 = Text("Don't tickle")
-    
-    var motto3: some View {
-        Text("Don't panic")
+// 1st option
+// Remember, modifiers return new objects rather than modifying existing ones
+struct Title: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.largeTitle)
+            .foregroundStyle(.white)
+            .padding()
+            .background(.blue)
+            .clipShape(.rect(cornerRadius: 10))
     }
-    
-    var spells: some View {
-        VStack {
-            Text("Lumos")
-            Text("Obliviate")
-        }
+}
+
+// 2nd option
+// Remember, modifiers return new objects rather than modifying existing ones
+extension View {
+    func titleStyle() -> some View {
+        modifier(Title())
     }
+}
+
+// 3rd option
+struct Watermark: ViewModifier {
+    var text: String
     
-    @ViewBuilder var spells2: some View {
-        Text("Lumos")
-        Text("Obliviate")
-    }
-    
-    struct CapsuleText: View {
-        var text: String
-        
-        var body: some View {
+    func body(content: Content) -> some View {
+        ZStack(alignment: .bottomTrailing) {
+            content
             Text(text)
-                .font(.largeTitle)
-                .padding()
-                .background(.blue)
-                .clipShape(.capsule)
-        }
-    }
-    
-    
-    var body: some View {
-        VStack(spacing: 10) {
-            CapsuleText(text: "First")
+                .font(.caption)
                 .foregroundStyle(.white)
-            CapsuleText(text:"Second")
-                .foregroundColor(.orange)
-        }
-
-//        If you ever struggle to remember the ternary operator... here's a simple mnemonic.
-//
-//        "WTF"
-//
-//        What? True : False
-//
-//        I mean, you're probably already thinking WTF. Might as well use it.
-
-        Form {
-            
-            VStack {
-                
-                Button("Hello Dainis") {
-                    useRedText.toggle()
-                }
-                .foregroundStyle(useRedText ? .red : .blue)
-                .blur(radius: 5)
-                
-                Text("Danis")
-                    .font(.largeTitle)
-                    .blur(radius: 3)
-                Text("Lada")
-                Text("Katja")
-                Text("Ruslan")
-                    .padding(20)
-            }
-            .font(.title)
-            .blur(radius: 2)
-            
-            VStack(spacing: 20) {
-                motto1
-                    .foregroundStyle(.cyan)
-                motto2
-                    .foregroundStyle(.red)
-                
-                motto3
-                
-                spells
-                    .padding(20)
-                
-                spells2
-                    .foregroundColor(.purple)
-            }
+                .padding(5)
+                .background(.orange)
         }
     }
 }
+
+extension View {
+    func watermarked(with text: String) -> some View {
+        modifier(Watermark(text: text))
+    }
+}
+
+    struct ContentView: View {
+        
+        var body: some View {
+            
+            Color.blue
+                .frame(width: 300, height: 200)
+                .watermarked(with: "My Property")
+            
+            Text("Hello Denis")
+                .modifier(Title())
+            
+            Text("Destroy ...")
+                .titleStyle()
+            
+        }
+    }
 
 #Preview {
     ContentView()
