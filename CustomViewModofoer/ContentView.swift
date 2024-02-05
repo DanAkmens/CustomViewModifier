@@ -44,6 +44,22 @@ struct Watermark: ViewModifier {
     }
 }
 
+struct Font: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.largeTitle)
+            .foregroundColor(.blue)
+            .fontWeight(.bold)
+            .shadow(color: .gray, radius: 2, x: 0, y: 2)
+    }
+}
+
+extension View {
+    func fontprominent() -> some View {
+        modifier(Font())
+    }
+}
+
 extension View {
     func watermarked(with text: String) -> some View {
         modifier(Watermark(text: text))
@@ -63,6 +79,9 @@ extension View {
             
             Text("Destroy ...")
                 .titleStyle()
+            
+            Text("Katja")
+                .fontprominent()
             
         }
     }
